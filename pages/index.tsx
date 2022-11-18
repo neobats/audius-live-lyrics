@@ -158,8 +158,8 @@ export default function Home(props) {
         <footer className={styles.footer}>
           <p>
             Made with{" "}
-            <span role="img" aria-label="heart">
-              ❤️
+            <span role="img" aria-label="headphones">
+              🎧
             </span>{" "}
             in the JAX metro
           </p>
