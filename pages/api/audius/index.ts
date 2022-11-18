@@ -1,7 +1,7 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import { audiusSdk, mapTrackData } from "../../../handlers/initAudius";
 import { getPaletteFromURL } from "color-thief-node";
 import sample from "lodash/sample";
+import { NextApiRequest, NextApiResponse } from "next";
+import { audiusSdk, mapTrackData } from "../../../handlers/initAudius";
 
 export default async function handler(
   req: NextApiRequest,
@@ -22,9 +22,9 @@ export default async function handler(
     const track = mapTrackData(results);
 
     const trackPhoto = track.artwork;
-    const accentColors = await getPaletteFromURL(trackPhoto, 5);
-    const mainColor = accentColors.shift();
-    const sampleColor = sample(accentColors);
+    const accentColors = await getPaletteFromURL(trackPhoto, 7);
+    const mainColor = accentColors[0];
+    const sampleColor = sample(accentColors.slice(1));
 
     res.status(200).json({
       track,

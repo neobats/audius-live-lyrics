@@ -1,10 +1,20 @@
 import debounce from "lodash/debounce";
 import Head from "next/head";
-import tinyColor from "tinycolor2"
 import { useCallback, useEffect, useState } from "react";
+import tinyColor from "tinycolor2";
 import { ColorResponse, TrackResponse } from "../models/audius";
 import styles from "../styles/Home.module.css";
+import { setCssVars } from "../utils/setCssVar";
 
+const CSS_VARS = {
+  "--bg-photo": "",
+  "--artist-photo": "",
+  "--bg-main": "",
+  "--bg-accent": "",
+  "--bg-accent-full": "",
+  "--card-color": "",
+  "--bg-card-input": "",
+}
 
 export default function Home(props) {
   const [searchQuery, setSearchQuery] = useState("");
@@ -19,9 +29,6 @@ export default function Home(props) {
   const [mainColor, setMainColor] = useState<string | null>(null);
   const [accentColor, setAccentColor] = useState<string | null>(null);
   const [accentColorFull, setAccentColorFull] = useState<string | null>(null);
-
-  console.log(props);
-  const welcome = "Welcome! Search a track to begin";
 
   const toRGBA = (color?: [number, number, number], opacity = 0.45) =>
     (color || [15, 15, 15])
@@ -49,9 +56,9 @@ export default function Home(props) {
   useEffect(() => {
     const fetcher = async () => {
       try {
-        const response = await fetch("api/audius?tid=OxRvl");
+        const response = await fetch("api/audius?tid=q51Vb");
         if (response.status !== 200) {
-          throw "Error, no 200 receieved";
+          throw "Error, no 200 received";
         }
         const trackData = await response.json();
         const track: TrackResponse = trackData.track;
@@ -80,20 +87,22 @@ export default function Home(props) {
   }, [submitting]);
 
   useEffect(() => {
-    const root = document.documentElement;
-    root.style.setProperty("--bg-photo", `url(${activeTrackArt})`);
-    root.style.setProperty("--artist-photo", `url(${activeTrackArtistPhoto})`);
-    root.style.setProperty("--bg-main", mainColor);
-    root.style.setProperty("--bg-accent", accentColor);
-    root.style.setProperty("--bg-accent-full", accentColorFull);
-    root.style.setProperty("--title-content", `"${welcome}"`);
-
     const tinyAccent = tinyColor(accentColor)
     const accentIsDark = tinyAccent.isDark()
     const accentFontColor = accentIsDark ? "white" : "black"
-    root.style.setProperty("--card-color", accentFontColor);
     const inputAccent = accentIsDark ? tinyAccent.darken(20) : tinyAccent.lighten(20)
-    root.style.setProperty("--bg-card-input", inputAccent.toRgbString());
+
+    const newVars = {
+      ...CSS_VARS,
+      "--bg-photo": `url(${activeTrackArt})`,
+      "--artist-photo": `url(${activeTrackArtistPhoto})`,
+      "--bg-main": mainColor,
+      "--bg-accent": accentColor,
+      "--bg-accent-full": accentColorFull,
+      "--card-color": accentFontColor,
+      "--bg-card-input": inputAccent.toRgbString(),
+    }
+    setCssVars(newVars)
 
   }, [activeTrackArt, activeTrackArtistPhoto, mainColor, accentColor]);
 
@@ -135,9 +144,12 @@ export default function Home(props) {
 
           {hasActiveTrack() && (
             <article>
-              <div className={styles.card}>
+              <div className={styles.artistCard}>
                 <h1 className={styles.title}>{activeTrackName}</h1>
-                <h2 className={styles.title}>{activeTrackArtist}</h2>
+                <span className={styles.artistAvatar}>
+                  <img src={activeTrackArtistPhoto} alt={activeTrackArtist} className={styles.artistPhoto} />
+                  <h2 className={styles.artistName}>{activeTrackArtist}</h2>
+                </span>
               </div>
             </article>
           )}
@@ -162,7 +174,7 @@ export default function Home(props) {
 export async function getServerSideProps() {
   const resp = await fetch(
     "http://api.musixmatch.com/ws/1.1/track.lyrics.get" +
-      `?track_id=234540077&apikey=${encodeURIComponent(process.env.MSX_KEY)}`
+      `?track_id=213429765&apikey=${encodeURIComponent(process.env.MSX_KEY)}`
   );
   const json = await resp.json();
   const lyrics = json.message.body.lyrics || null;
