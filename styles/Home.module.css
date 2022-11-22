@@ -78,86 +78,9 @@
   justify-self: center;
 }
 
-.title,
-.artistName {
-  margin: 0;
-  line-height: 1.15;
-  font-size: 1.2rem;
-  font-weight: 800;
-}
-
-.artistName {
-  padding-left: 1rem;
-}
-
-.artistPhoto {
-  border-radius: 50%;
-  max-width: 30%; 
-  object-fit: cover;
-  object-position: center;
-  border: var(--accent-border);
-}
-
-.artistCard,
-.card,
-.footer {
-  border: var(--accent-border);
-  border-radius: 4px;
-  box-shadow: var(--shadow-elevation-medium);
-
-  background-color: var(--bg-accent);
-  -webkit-backdrop-filter: blur(6px) saturate(180%);
-  backdrop-filter: blur(6px) saturate(180%);
-}
-.artistCard,
-.card {
-  display: flex;
-  flex-direction: column;
-  padding: 2rem;
-  margin: 2rem 0;
-}
-
-.artistCard {
-  padding: 2rem 1rem;
-  gap: 0.5rem;
-}
-
-.artistAvatar {
-  display: inline-flex;
-  place-items: center;
-  max-width: max-content;
-}
-
-.card label {
-  margin-bottom: 0.5rem;
-  font-weight: 300;
-}
-
-.card input {
-  border: 0px;
-  font-family: Commissioner, Helvetica, sans-serif;
-  padding: 0.25rem 0.5rem;
-  margin: 0px;
-  color: var(--card-color);
-  background: var(--bg-card-input);
-  border-radius: 4px;
-  width: min(100%, 60ch);
-}
-
 .track {
   height: 100%;
   width: 100%;
   /* background-clip: text; */
   /* -webkit-bakcground-clip: text; */
-}
-
-.footer {
-  border: 0;
-  border-top: var(--accent-border);
-  grid-area: overlay;
-  align-self: end;
-  font-weight: 800;
-  width: 100%;
-  padding: 1rem;
-  text-align: center;
 }

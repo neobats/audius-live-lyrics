@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { mapTracksData } from "../../../handlers/initAudius";
-import { audiusSdk } from "../../../handlers/initAudius";
+import { audiusSdk, mapTracksData } from "../../../utils/handlers/initAudius";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const params = req.body.params;

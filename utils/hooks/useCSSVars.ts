@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import tinyColor from "tinycolor2";
-import { Track, TrackColors } from "../hooks/useTrack";
-import { CSSVars } from "../models/colors";
-import { setCssVars } from "../utils/setCssVar";
+import { CSSVars } from "../../models/colors";
+import { Track, TrackColors } from "../hooks";
+import { setCssVars } from "../setCssVar";
 
 export const useCSSVars = <T = CSSVars>(
   track: Track,

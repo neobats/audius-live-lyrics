@@ -1,14 +1,13 @@
-import debounce from "lodash/debounce";
 import Head from "next/head";
-import { useCallback, useEffect, useState } from "react";
-import { useCSSVars } from "../hooks/useCSSVars";
-import { useTrack } from "../hooks/useTrack";
+import { useState } from "react";
+import { Footer, SearchCard, TrackCard } from "../components";
+import { SubmissionState } from "../models/submission";
 import styles from "../styles/Home.module.css";
+import { useCSSVars, useTrack } from "../utils/hooks";
 
 
 export default function Home(props) {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [submitting, setSubmitting] = useState("idle"); // idle, submitting, error
+  const [submitting, setSubmitting] = useState<SubmissionState>("idle"); // idle, submitting, error
   const [activeTrackLyrics, setActiveTrackLyrics] = useState(
     props.lyrics?.lyrics_body || ""
   );
@@ -27,23 +26,6 @@ export default function Home(props) {
   const hasActiveTrack = () =>
     activeTrack.art || activeTrack.name || activeTrack.artist;
 
-  const handleTyping = useCallback(
-    debounce(() => setSubmitting("idle"), 700),
-    []
-  );
-
-  const handleChange = (e: any) => {
-    const val = e.target.value;
-    setSearchQuery(val);
-    handleTyping();
-  };
-
-  useEffect(() => {
-    if (submitting !== "submitting") {
-      return;
-    }
-
-  }, [submitting]);
 
   return (
     <div className={styles.body}>
@@ -67,43 +49,14 @@ export default function Home(props) {
             <p>Encountered an error trying to load your results. Try again?</p>
           )}
 
-          <article>
-            <div className={styles.card}>
-              <label htmlFor="search">Search for tracks</label>
-              <input
-                type="text"
-                name="search"
-                id="search"
-                value={searchQuery}
-                placeholder="Some Mud Propaganda"
-                onChange={handleChange}
-              />
-            </div>
-          </article>
+          <SearchCard submissionState={[submitting, setSubmitting]} placeholder="Some Mud Propaganda" />
 
           {hasActiveTrack() && (
-            <article>
-              <div className={styles.artistCard}>
-                <h1 className={styles.title}>{activeTrack.name}</h1>
-                <span className={styles.artistAvatar}>
-                  <img src={activeTrack.artistPhoto} alt={activeTrack.artist} className={styles.artistPhoto} />
-                  <h2 className={styles.artistName}>{activeTrack.artist}</h2>
-                </span>
-              </div>
-            </article>
+            <TrackCard track={activeTrack} />
           )}
         </main>
 
-        <footer className={styles.footer}>
-          <p>
-            Made with{" "}
-            <span role="img" aria-label="headphones">
-              🎧
-            </span>{" "}
-            in the JAX metro
-          </p>
-          <p>{props.lyrics.lyrics_copyright}</p>
-        </footer>
+      <Footer copyright={props.lyrics.lyrics_copyright}/>
       </div>
       <script type="text/javascript" src={props.lyrics.script_tracking_url} />
     </div>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ColorResponse, TrackResponse } from "../models/audius";
+import { ColorResponse, TrackResponse } from "../../models/audius";
 
 export type TrackColors = {
   main: string;

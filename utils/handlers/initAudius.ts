@@ -1,7 +1,7 @@
 import { sdk } from "@audius/sdk";
 import { Track } from "@audius/sdk/dist/sdk/index";
 import Web3 from "web3";
-import { Artist } from "../models/audius";
+import { Artist } from "../../models/audius";
 
 export const audiusSdk = sdk({
   appName: "live-lyrics",

@@ -1,7 +1,7 @@
 import { getPaletteFromURL } from "color-thief-node";
 import sample from "lodash/sample";
 import { NextApiRequest, NextApiResponse } from "next";
-import { audiusSdk, mapTrackData } from "../../../handlers/initAudius";
+import { audiusSdk, mapTrackData } from "../../../utils/handlers/initAudius";
 
 export default async function handler(
   req: NextApiRequest,

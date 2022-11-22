@@ -1,0 +1,1 @@
+export type SubmissionState = "idle" | "submitting" | "error";
