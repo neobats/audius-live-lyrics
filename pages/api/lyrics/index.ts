@@ -15,7 +15,10 @@ export default async function handler(
   const tid = params.tid instanceof Array ? params.tid[0] : params.tid;
 
   try {
-    const response = await fetch("https://api.genius.com/songs/" + tid);
+    const response = await fetch(
+      "https://api.musixmatch.com/ws/1.1/track.lyrics.get?track_id=" + tid
+      + "&apikey=" + process.env.MUSIXMATCH_API_KEY
+    );
     const json = await response.json();
     res.status(200).json({ track: json });
   } catch (e) {
