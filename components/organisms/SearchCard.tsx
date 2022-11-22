@@ -1,18 +1,14 @@
 import debounce from "lodash/debounce";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { SubmissionState } from "../../models/submission";
 import { Card } from "../molecules/Card";
 
 type SearchCardProps = {
-  submissionState: ReturnType<
-    typeof useState<SubmissionState>
-  >
+  setSubmitting: (state: SubmissionState) => void;
 } & React.HTMLAttributes<HTMLInputElement>
 
-export const SearchCard = ({ defaultValue, submissionState, ...props }: SearchCardProps) => {
+export const SearchCard = ({ setSubmitting, ...props }: SearchCardProps) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [submitting, setSubmitting] = submissionState
-  
 
   const handleTyping = useCallback(
     debounce(() => setSubmitting("idle"), 700),
@@ -21,16 +17,11 @@ export const SearchCard = ({ defaultValue, submissionState, ...props }: SearchCa
 
   const handleChange = (e: any) => {
     const val = e.target.value;
+    setSubmitting("submitting")
     setSearchQuery(val);
     handleTyping();
   };
 
-  useEffect(() => {
-    if (submitting !== "submitting") {
-      return;
-    }
-
-  }, [submitting]);
   return (
     <Card>
       <label htmlFor="search">Search for tracks</label>

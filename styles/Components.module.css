@@ -13,6 +13,7 @@
   height: 100vh;
 }
 
+.errorState p,
 .lyrics {
   background-clip: text;
   -webkit-background-clip: text;
@@ -116,4 +117,12 @@
   color: var(--card-color);
   opacity: 0.5;
   font-family: Commissioner, Helvetica, sans-serif;
+}
+
+.errorState {
+  grid-area: overlay;
+  transform: scale(120%) rotate(-30deg);
+}
+.errorState p {
+  background-image: url("/splat.jpg");
 }

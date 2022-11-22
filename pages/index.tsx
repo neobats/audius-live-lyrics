@@ -1,6 +1,5 @@
-import Head from "next/head";
-import { useState } from "react";
-import { Footer, SearchCard, TrackCard } from "../components";
+import { useEffect, useState } from "react";
+import { Layout, SearchCard, TrackCard } from "../components";
 import { SubmissionState } from "../models/submission";
 import styles from "../styles/Home.module.css";
 import { useCSSVars, useTrack } from "../utils/hooks";
@@ -26,40 +25,43 @@ export default function Home(props) {
   const hasActiveTrack = () =>
     activeTrack.art || activeTrack.name || activeTrack.artist;
 
+  useEffect(() => {
+    if (submitting !== "submitting") {
+      return;
+    }
+
+    
+
+  }, [submitting]);
 
   return (
-    <div className={styles.body}>
-      <div className={styles.container}>
-        <Head>
-          <title>Audius Live Lyrics</title>
-          <link rel="icon" href="/favicon.ico" />
-        </Head>
-        {activeTrackLyrics && activeTrackLyrics.length > 50 ? (
-          <p className={styles.lyrics}>{prepLyrics(activeTrackLyrics)}</p>
-        )
-        : (
-          <img src={activeTrack.art} alt={activeTrack.name} className={styles.bgPhoto}/>
-        )}
+  <Layout
+    copyright={props.lyrics.lyrics_copyright}
+    scriptTrackingUrl={props.lyrics.script_tracking_url}
+    errorText="hello"
 
-        <main className={styles.main}>
-          {submitting === "submitting" && (
-            <p>Hold your horses, we&apos;re getting your results!</p>
-          )}
-          {submitting === "error" && (
-            <p>Encountered an error trying to load your results. Try again?</p>
-          )}
+  >
+    {activeTrackLyrics && activeTrackLyrics.length > 50 ? (
+      <p className={styles.lyrics}>{prepLyrics(activeTrackLyrics)}</p>
+    )
+    : (
+      <img src={activeTrack.art} alt={activeTrack.name} className={styles.bgPhoto}/>
+    )}
+    <main className={styles.main}>
+      {submitting === "submitting" && (
+        <p>Hold your horses, we&apos;re getting your results!</p>
+      )}
+      {submitting === "error" && (
+        <p>Encountered an error trying to load your results. Try again?</p>
+      )}
 
-          <SearchCard submissionState={[submitting, setSubmitting]} placeholder="Some Mud Propaganda" />
+      <SearchCard setSubmitting={setSubmitting} placeholder="Some Mud Propaganda" />
 
-          {hasActiveTrack() && (
-            <TrackCard track={activeTrack} />
-          )}
-        </main>
-
-      <Footer copyright={props.lyrics.lyrics_copyright}/>
-      </div>
-      <script type="text/javascript" src={props.lyrics.script_tracking_url} />
-    </div>
+      {hasActiveTrack() && (
+        <TrackCard track={activeTrack} />
+      )}
+    </main>
+    </Layout>
   );
 }
 
