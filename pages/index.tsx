@@ -1,20 +1,10 @@
 import debounce from "lodash/debounce";
 import Head from "next/head";
 import { useCallback, useEffect, useState } from "react";
-import tinyColor from "tinycolor2";
-import { ColorResponse, TrackResponse } from "../models/audius";
+import { useCSSVars } from "../hooks/useCSSVars";
+import { useTrack } from "../hooks/useTrack";
 import styles from "../styles/Home.module.css";
-import { setCssVars } from "../utils/setCssVar";
 
-const CSS_VARS = {
-  "--bg-photo": "",
-  "--artist-photo": "",
-  "--bg-main": "",
-  "--bg-accent": "",
-  "--bg-accent-full": "",
-  "--card-color": "",
-  "--bg-card-input": "",
-}
 
 export default function Home(props) {
   const [searchQuery, setSearchQuery] = useState("");
@@ -22,25 +12,20 @@ export default function Home(props) {
   const [activeTrackLyrics, setActiveTrackLyrics] = useState(
     props.lyrics?.lyrics_body || ""
   );
-  const [activeTrackName, setActiveTrackName] = useState("");
-  const [activeTrackArt, setActiveTrackArt] = useState("");
-  const [activeTrackArtist, setActiveTrackArtist] = useState("");
-  const [activeTrackArtistPhoto, setActiveTrackArtistPhoto] = useState("");
-  const [mainColor, setMainColor] = useState<string | null>(null);
-  const [accentColor, setAccentColor] = useState<string | null>(null);
-  const [accentColorFull, setAccentColorFull] = useState<string | null>(null);
+  const {
+    error: trackError,
+    track: activeTrack,
+    colors,
+  } = useTrack("q51Vb");
 
-  const toRGBA = (color?: [number, number, number], opacity = 0.45) =>
-    (color || [15, 15, 15])
-      .reduce((rgba, current) => rgba.concat(`${current}, `), "rgba(")
-      .concat(`${opacity})`);
+  useCSSVars(activeTrack, colors)
 
   const prepLyrics = (lyrics: string) => lyrics.split("\n").map((line, index) => (
     <span key={line.slice(0, 10) + index} className={styles.lyricLine}>{line}</span>
   ))
 
   const hasActiveTrack = () =>
-    activeTrackArt || activeTrackName || activeTrackArtist;
+    activeTrack.art || activeTrack.name || activeTrack.artist;
 
   const handleTyping = useCallback(
     debounce(() => setSubmitting("idle"), 700),
@@ -54,57 +39,11 @@ export default function Home(props) {
   };
 
   useEffect(() => {
-    const fetcher = async () => {
-      try {
-        const response = await fetch("api/audius?tid=q51Vb");
-        if (response.status !== 200) {
-          throw "Error, no 200 received";
-        }
-        const trackData = await response.json();
-        const track: TrackResponse = trackData.track;
-        const colors: ColorResponse = trackData.colors;
-
-        setActiveTrackArt(track.artwork);
-        setActiveTrackName(track.title);
-        setActiveTrackArtist(track.artist.handle);
-        setActiveTrackArtistPhoto(track.artist.photo);
-
-        setMainColor(toRGBA(colors.main, 1));
-        setAccentColor(toRGBA(colors.accent));
-        setAccentColorFull(toRGBA(colors.accent, 1));
-      } catch (e) {
-        setSubmitting("error");
-        console.error(e);
-      }
-    };
-    fetcher();
-  }, []);
-
-  useEffect(() => {
     if (submitting !== "submitting") {
       return;
     }
+
   }, [submitting]);
-
-  useEffect(() => {
-    const tinyAccent = tinyColor(accentColor)
-    const accentIsDark = tinyAccent.isDark()
-    const accentFontColor = accentIsDark ? "white" : "black"
-    const inputAccent = accentIsDark ? tinyAccent.darken(20) : tinyAccent.lighten(20)
-
-    const newVars = {
-      ...CSS_VARS,
-      "--bg-photo": `url(${activeTrackArt})`,
-      "--artist-photo": `url(${activeTrackArtistPhoto})`,
-      "--bg-main": mainColor,
-      "--bg-accent": accentColor,
-      "--bg-accent-full": accentColorFull,
-      "--card-color": accentFontColor,
-      "--bg-card-input": inputAccent.toRgbString(),
-    }
-    setCssVars(newVars)
-
-  }, [activeTrackArt, activeTrackArtistPhoto, mainColor, accentColor]);
 
   return (
     <div className={styles.body}>
@@ -117,7 +56,7 @@ export default function Home(props) {
           <p className={styles.lyrics}>{prepLyrics(activeTrackLyrics)}</p>
         )
         : (
-          <img src={activeTrackArt} alt={activeTrackName} className={styles.bgPhoto}/>
+          <img src={activeTrack.art} alt={activeTrack.name} className={styles.bgPhoto}/>
         )}
 
         <main className={styles.main}>
@@ -145,10 +84,10 @@ export default function Home(props) {
           {hasActiveTrack() && (
             <article>
               <div className={styles.artistCard}>
-                <h1 className={styles.title}>{activeTrackName}</h1>
+                <h1 className={styles.title}>{activeTrack.name}</h1>
                 <span className={styles.artistAvatar}>
-                  <img src={activeTrackArtistPhoto} alt={activeTrackArtist} className={styles.artistPhoto} />
-                  <h2 className={styles.artistName}>{activeTrackArtist}</h2>
+                  <img src={activeTrack.artistPhoto} alt={activeTrack.artist} className={styles.artistPhoto} />
+                  <h2 className={styles.artistName}>{activeTrack.artist}</h2>
                 </span>
               </div>
             </article>
