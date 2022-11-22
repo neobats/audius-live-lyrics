@@ -111,3 +111,9 @@
   border-radius: 4px;
   width: min(100%, 60ch);
 }
+
+.card input::placeholder {
+  color: var(--card-color);
+  opacity: 0.5;
+  font-family: Commissioner, Helvetica, sans-serif;
+}
