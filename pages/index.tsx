@@ -29,7 +29,8 @@ export default function Home(props) {
     if (submitting !== "submitting") {
       return;
     }
-
+  
+    // submitting
     
 
   }, [submitting]);
@@ -39,9 +40,9 @@ export default function Home(props) {
     copyright={props.lyrics.lyrics_copyright}
     scriptTrackingUrl={props.lyrics.script_tracking_url}
     errorText="hello"
-
   >
-    {activeTrackLyrics && activeTrackLyrics.length > 50 ? (
+    {activeTrackLyrics && activeTrackLyrics.length > 50 
+    ? (
       <p className={styles.lyrics}>{prepLyrics(activeTrackLyrics)}</p>
     )
     : (

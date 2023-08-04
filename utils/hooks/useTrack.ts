@@ -5,33 +5,31 @@ export type TrackColors = {
   main: string;
   accent: string;
   accentFull: string;
-} 
+};
 
 export type Track = {
   name: string;
   artist: string;
   art: string;
   artistPhoto: string;
-}
+};
 
 export type UseTrackReturnType = {
-  error: string,
-  track: Track,
-  colors: TrackColors,
-}
+  error: string;
+  track: Track;
+  colors: TrackColors;
+};
 
-export const useTrack = (tid: string): UseTrackReturnType=> {
-  const [trackError, setTrackError] = useState("")
+export const useTrack = (tid: string): UseTrackReturnType => {
+  const [trackError, setTrackError] = useState("");
   const [trackName, setTrackName] = useState("");
   const [trackArt, setTrackArt] = useState("");
   const [trackArtist, setTrackArtist] = useState("");
   const [trackArtistPhoto, setTrackArtistPhoto] = useState("");
 
-
   const [mainColor, setMainColor] = useState<string | null>(null);
   const [accentColor, setAccentColor] = useState<string | null>(null);
   const [accentColorFull, setAccentColorFull] = useState<string | null>(null);
-
 
   useEffect(() => {
     const fetcher = async () => {
@@ -40,6 +38,7 @@ export const useTrack = (tid: string): UseTrackReturnType=> {
         if (response.status !== 200) {
           throw "Error, no 200 received";
         }
+
         const trackData = await response.json();
         const track: TrackResponse = trackData.track;
         const colors: ColorResponse = trackData.colors;
@@ -72,9 +71,9 @@ export const useTrack = (tid: string): UseTrackReturnType=> {
       main: mainColor,
       accent: accentColor,
       accentFull: accentColorFull,
-    }
+    },
   };
-}
+};
 
 const toRGBA = (color?: [number, number, number], opacity = 0.45) =>
   (color || [15, 15, 15])

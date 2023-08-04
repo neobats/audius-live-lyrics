@@ -1,13 +1,20 @@
 import debounce from "lodash/debounce";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { SubmissionState } from "../../models/submission";
 import { Card } from "../molecules/Card";
 
 type SearchCardProps = {
   setSubmitting: (state: SubmissionState) => void;
-} & React.HTMLAttributes<HTMLInputElement>
+  lyricsSearchUrl?: string;
+  audiusSearchUrl?: string;
+} & React.HTMLAttributes<HTMLInputElement>;
 
-export const SearchCard = ({ setSubmitting, ...props }: SearchCardProps) => {
+export const SearchCard = (props: SearchCardProps) => {
+  const {
+    audiusSearchUrl = DEFAULT_AUDIUS_SEARCH_URL,
+    lyricsSearchUrl = DEFAULT_LYRICS_SEARCH_URL,
+    setSubmitting,
+  } = props;
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleTyping = useCallback(
@@ -17,10 +24,12 @@ export const SearchCard = ({ setSubmitting, ...props }: SearchCardProps) => {
 
   const handleChange = (e: any) => {
     const val = e.target.value;
-    setSubmitting("submitting")
+    setSubmitting("submitting");
     setSearchQuery(val);
     handleTyping();
   };
+
+  useEffect(() => {}, [audiusSearchUrl, lyricsSearchUrl, searchQuery]);
 
   return (
     <Card>
@@ -34,5 +43,11 @@ export const SearchCard = ({ setSubmitting, ...props }: SearchCardProps) => {
         onChange={handleChange}
       />
     </Card>
-  )
-}
+  );
+};
+
+const DEFAULT_LYRICS_SEARCH_URL =
+  "http://api.musixmatch.com/ws/1.1/track.search?apikey=" +
+  encodeURIComponent(process.env.MSX_KEY) +
+  "&q_track=";
+const DEFAULT_AUDIUS_SEARCH_URL = "api/audius?tid=";
